@@ -160,7 +160,7 @@ Root-Is-Purelib: true
     def add_entry_points(self, console_scripts, entry_points: dict):
         """Write entry_points.txt file to the distribution."""
         # https://packaging.python.org/specifications/entry-points/
-        if not console_scripts:
+        if not console_scripts and not entry_points:
             return
         lines = ["[console_scripts]"] + console_scripts
         if entry_points:
