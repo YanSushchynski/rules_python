@@ -157,12 +157,16 @@ Root-Is-Purelib: true
         metadata += "\n"
         self.add_string(self.distinfo_path('METADATA'), metadata)
 
-    def add_entry_points(self, console_scripts):
+    def add_entry_points(self, console_scripts, entry_points: dict):
         """Write entry_points.txt file to the distribution."""
         # https://packaging.python.org/specifications/entry-points/
         if not console_scripts:
             return
         lines = ["[console_scripts]"] + console_scripts
+        if entry_points:
+            for k, v in entry_points.items():
+                lines.append("[%s]" % k)
+                lines += v
         contents = '\n'.join(lines)
         self.add_string(self.distinfo_path('entry_points.txt'), contents)
 
@@ -246,6 +250,10 @@ def main():
         '--console_script', action='append',
         help="Defines a 'console_script' entry point. "
              "Can be supplied multiple times.")
+    contents_group.add_argument(
+        '--entry_points', action='append',
+        help="Defines entry points. "
+             "Can be supplied multiple times.")
 
     requirements_group = parser.add_argument_group("Package requirements")
     requirements_group.add_argument(
@@ -303,13 +311,13 @@ def main():
         requires = arguments.requires or []
         extra_headers = arguments.header or []
         console_scripts = arguments.console_script or []
-
+        entry_points = arguments.entry_points or []
         maker.add_metadata(extra_headers=extra_headers,
                            description=description,
                            classifiers=classifiers,
                            requires=requires,
                            extra_requires=extra_requires)
-        maker.add_entry_points(console_scripts=console_scripts)
+        maker.add_entry_points(console_scripts=console_scripts, entry_points=entry_points)
         maker.add_recordfile()
 
 

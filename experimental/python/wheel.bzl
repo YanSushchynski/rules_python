@@ -203,6 +203,13 @@ _entrypoint_attrs = {
 console_script entry points, e.g. 'experimental.examples.wheel.main:main'.
 """,
     ),
+    "entry_points": attr.string_list_dict(
+        doc = """
+entry points, e.g. "custodian.resources": [
+                                            'gcp = c7n_gcp.entry:initialize_gcp',
+                    ].
+        """
+    )
 }
 
 _other_attrs = {
