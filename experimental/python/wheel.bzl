@@ -135,6 +135,12 @@ def _py_wheel_impl(ctx):
     for name, ref in ctx.attr.console_scripts.items():
         args.add("--console_script", name + " = " + ref)
 
+    for point_group, points in ctx.attr.entry_points.items():
+        for p in points:
+            args.add("--entry_points", p + ";" + point_group)
+
+    #    args.add_all(inputs_to_package, format_each = "--input_file=%s", map_each = _input_file_to_arg)
+
     if ctx.attr.description_file:
         description_file = ctx.file.description_file
         args.add("--description_file", description_file)
@@ -208,8 +214,8 @@ console_script entry points, e.g. 'experimental.examples.wheel.main:main'.
 entry points, e.g. "custodian.resources": [
                                             'gcp = c7n_gcp.entry:initialize_gcp',
                     ].
-        """
-    )
+        """,
+    ),
 }
 
 _other_attrs = {

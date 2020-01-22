@@ -157,17 +157,23 @@ Root-Is-Purelib: true
         metadata += "\n"
         self.add_string(self.distinfo_path('METADATA'), metadata)
 
-    def add_entry_points(self, console_scripts, entry_points: dict):
+    def add_entry_points(self, console_scripts, entry_points: list):
         """Write entry_points.txt file to the distribution."""
         # https://packaging.python.org/specifications/entry-points/
-        if not (console_scripts and entry_points):
+        if not (console_scripts or entry_points):
             return
+        print("*"*30)
+        print(entry_points)
         lines = []
         if console_scripts:
             lines.append("[console_scripts]")
             lines += console_scripts
         if entry_points:
-            for k, v in entry_points.items():
+            entry_points_dict = collections.defaultdict(list)
+            for p in entry_points:
+                point, point_group = p.rsplit(';', 1)
+                entry_points_dict[point_group].append(point)
+            for k, v in entry_points_dict.items():
                 lines.append("[%s]" % k)
                 lines += v
         contents = '\n'.join(lines)
